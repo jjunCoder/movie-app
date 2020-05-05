@@ -1,25 +1,47 @@
 import React from "react";
+import Movie from "./Movie";
+import axios from "axios";
 
 class App extends React.Component {
     state = {
-        number: 0,
+        isLoaded: false,
+        movies: [],
     };
 
-    add = () => {
-        this.setState((current) => ({ number: current.number + 1 }));
-    };
-
-    minus = () => {
-        this.setState((current) => ({ number: current.number - 1 }));
+    getMovie = async () => {
+        const {
+            data: {
+                data: { movies },
+            },
+        } = await axios.get(
+            "https://yts-proxy.now.sh/list_movies.json?sort_by=rating"
+        );
+        this.setState({ movies, isLoaded: true });
     };
 
     render() {
+        this.getMovie();
+        const { isLoaded, movies } = this.state;
+
         return (
             <div>
-                <h1>Hello!</h1>
-                <h2>{this.state.number}</h2>
-                <button onClick={this.add}>Add</button>
-                <button onClick={this.minus}>Minus</button>
+                <h1>Movie-app</h1>
+                {!isLoaded ? (
+                    <p>Loading...</p>
+                ) : (
+                    movies.map(
+                        ({ id, title, medium_cover_image, year, rating }) => (
+                            <Movie
+                                key={id}
+                                id={id}
+                                title={title}
+                                medium_cover_image={medium_cover_image}
+                                year={year}
+                                rating={rating}
+                            />
+                        )
+                    )
+                )}
             </div>
         );
     }
