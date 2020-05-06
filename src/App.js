@@ -4,7 +4,7 @@ import axios from "axios";
 
 class App extends React.Component {
     state = {
-        isLoaded: false,
+        isLoading: true,
         movies: [],
     };
 
@@ -16,33 +16,38 @@ class App extends React.Component {
         } = await axios.get(
             "https://yts-proxy.now.sh/list_movies.json?sort_by=rating"
         );
-        this.setState({ movies, isLoaded: true });
+        this.setState({ movies, isLoading: false });
     };
 
-    render() {
+    componentDidMount() {
         this.getMovie();
-        const { isLoaded, movies } = this.state;
+    }
+
+    render() {
+        const { isLoading, movies } = this.state;
 
         return (
-            <div>
+            <section class="container">
                 <h1>Movie-app</h1>
-                {!isLoaded ? (
-                    <p>Loading...</p>
+                {isLoading ? (
+                    <div class="loader">
+                        <span class="loader__text">Loading...</span>
+                    </div>
                 ) : (
-                    movies.map(
-                        ({ id, title, medium_cover_image, year, rating }) => (
+                    <div class="movies">
+                        {movies.map((movie) => (
                             <Movie
-                                key={id}
-                                id={id}
-                                title={title}
-                                medium_cover_image={medium_cover_image}
-                                year={year}
-                                rating={rating}
+                                key={movie.id}
+                                id={movie.id}
+                                title={movie.title}
+                                medium_cover_image={movie.medium_cover_image}
+                                year={movie.year}
+                                rating={movie.rating}
                             />
-                        )
-                    )
+                        ))}
+                    </div>
                 )}
-            </div>
+            </section>
         );
     }
 }

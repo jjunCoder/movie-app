@@ -3,11 +3,13 @@ import { string, number } from "prop-types";
 
 function Movie({ id, title, medium_cover_image, year, rating }) {
     return (
-        <div>
-            <h4>{title}</h4>
+        <div class="movie">
             <img src={medium_cover_image} alt={title} />
-            <p>{year}</p>
-            <p>{rating}</p>
+            <div class="movie__data">
+                <h4 class="movie__title">{title}</h4>
+                <p class="movie__year">{year}</p>
+                <p class="movie__rating">{rating}</p>
+            </div>
         </div>
     );
 }
